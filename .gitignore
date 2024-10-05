@@ -1,0 +1,38 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+.vscode/ 
+# Ignore Gradle build output directory
+build
+# Gradle files
+.gradle/
+build/
+out/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration file (local.properties can be used for local settings)
+local.properties
+
+# IDE specific files
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Java specific
+*.class
+*.jar
+*.war
+*.ear
+
+# Other files
+*.log
+*.hprof
+*.stacktrace
+
+# OS generated files
+.DS_Store
+Thumbs.db
