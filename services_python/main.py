@@ -22,6 +22,7 @@ scores = []
 shape_change_time = time.time()
 shape_display_duration = 3
 similarity_threshold = 50
+print_coords_time = time.time()
 
 def select_shape_type():
     print("Select the type of shape:")
@@ -50,12 +51,12 @@ def calculate_score(detected_coords, target_coords, target_shape_name):
     if target_shape_name == "Jumping":
         return 100
 
-    if avg_distance < 20:
+    if avg_distance < 50:
         return 100
-    elif avg_distance < similarity_threshold:
-        return max(0, int(100 - (avg_distance / (similarity_threshold * 0.5)) * 100))
+    elif avg_distance < 434:
+        return max(0, int(100 - ((avg_distance - 50) / (434 - 50)) * 100)) 
     else:
-        return random.randint(20, 60)
+        return 0
 
 with open('resources/shapes.json', 'r') as f:
     shapes = json.load(f)
@@ -80,10 +81,14 @@ while True:
         for landmark in results.pose_landmarks.landmark:
             detected_coords.append((landmark.x * frame.shape[1], landmark.y * frame.shape[0]))
 
+        if time.time() - print_coords_time > 3:
+            # print("Coordenadas detectadas:", detected_coords)
+            print_coords_time = time.time()
+
         if time.time() - shape_change_time > shape_display_duration:
             score = calculate_score(detected_coords, current_shape["coords"], current_shape["name"])
             scores.append((current_shape["name"], score))
-            print(f"Score obtained for '{current_shape['name']}': {score}")
+            print(f"Score obtenido para '{current_shape['name']}': {score}")
 
             current_shape = random.choice(shapes[current_type.value])
             shape_change_time = time.time()
@@ -91,9 +96,9 @@ while True:
         for coord in current_shape["coords"]:
             cv2.circle(frame, coord, 5, (255, 255, 0), -1)
         cv2.putText(frame, current_shape["name"], (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
-        cv2.putText(frame, "Mimic the shape!", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+        cv2.putText(frame, "Imita la forma!", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
 
-    cv2.imshow('Real-time Body Pose Detection', frame)
+    cv2.imshow('Detección de postura en tiempo real', frame)
 
     key = cv2.waitKey(1)
     if key & 0xFF == ord('q'):
@@ -102,6 +107,6 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 
-print("Scores obtained in the session:")
+print("Puntajes obtenidos en la sesión:")
 for shape_name, score in scores:
     print(f"{shape_name}: {score}")
