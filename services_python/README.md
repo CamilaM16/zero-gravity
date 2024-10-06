@@ -4,4 +4,3 @@ python -m venv venv
 pip install -r requirements.txt
 python emotion.py
 pip install opencv-python mediapipe deepface
-python main.py
